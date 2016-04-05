@@ -61,7 +61,7 @@ const    Runner = Matter.Runner;
 
 
 //trying to log collisions
-console.log('test log');
+
 // console.log(Date());
 
 
@@ -88,7 +88,7 @@ const Universe = React.createClass ( {
     {/* create a Matter.js engine */}
     const engine = Engine.create({
           render: {
-          element: $('#universeContainer')
+          element: document.body
           ,canvas: canvas
           ,options: {
             width: 500,
@@ -219,8 +219,12 @@ const Universe = React.createClass ( {
 
       <div id="universeContainer">
         <button onClick={this.matterJSCode}>Start the sim</button>
-        canvas?
-
+        <ul>
+        canvas below to see if it gets overwritten
+        <canvas></canvas>
+        canvas with id 'canvas' below
+        <canvas id="canvas"></canvas>
+        </ul>
 
       </div>
     )

@@ -11,7 +11,7 @@ console.log('timeControl.js ran');
 const TimeButton = React.createClass({
 
   handleClick : function (event) {
-    console.log('thingy');
+    console.log('handleClick called');
     event.preventDefault();
     this.pauseUniverse();
   },

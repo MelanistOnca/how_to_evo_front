@@ -13,19 +13,18 @@ const TimeButton = require('./universe/timeControl.js');
 const Front = React.createClass ({
 
   getInitialState : function() {
-    console.log('front initialstate ran');
+
     return {
       placeholder: ['string'],
       time: 'normal', //pick from: ['stopped','normal','fast','slow']
     }
   },
   componentDidMount : function () {
-    console.log('test');//this did not run when invoking other components
-    //runs when only the div and text are attempting to render
+
   },
 
   render : function () {
-    console.log('render before return ran');
+
     return (
 
       <div id="frontContainer">
@@ -49,4 +48,3 @@ const Front = React.createClass ({
 
 
   ReactDOM.render( <Front/> , document.querySelector('#container') );
-  console.log('end of front.js');
