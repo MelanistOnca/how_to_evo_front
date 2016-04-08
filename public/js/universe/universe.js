@@ -1,8 +1,11 @@
 //matterjs stuff here, likely have subfiles
 const React = require('react');
 const Matter = require('matter-js');
-const $ = require('jquery')
-console.log('universe.js ran');
+const $ = require('jquery');
+
+// console.log('universe.js ran');
+
+//matter-js reqs
 const    Engine = Matter.Engine;
 const    World = Matter.World;
 const    Bodies = Matter.Bodies;
@@ -14,58 +17,17 @@ const    Common = Matter.Common;
 const    Events = Matter.Events;
 const    Pair = Matter.Pair;
 const    Render = Matter.Render;
+//check render docs to see if you can insert the canvas to a specific element
+// http://brm.io/matter-js/docs/classes/Render.html#property_element
 const    Runner = Matter.Runner;
 
-
-// Matter.Contact module seems to be what 'generates' collision-ability?
-// {x:0,y:0} is top left corner of canvas, 1600 appears to be equivalent to 800px, since height is 600 px, i'm guessing it goes to 1200px
-// Matter.js module aliases
-
-// body.restitution Number
-// A Number that defines the restitution (elasticity) of the body. The value is always positive and is in the range (0, 1). A value of 0 means collisions may be perfectly inelastic and no bouncing may occur.
-
-
-//const's see what Matter.Contact.create(vertex) does
-//vertex MIGHT be set of x,y coords supplied as {x: #, y: #}  ?
-// const testContact = Contact.create({x:450,y:190});
-//generates the following error message:
-// matter.min.js:formatted:742Uncaught TypeError: Cannot read property 'id' of undefinedn.id @ matter.min.js:formatted:742n.create @ matter.min.js:formatted:734(anonymous function) @ matter_intro.js:22
-
-
-//trying Detector for collisions
-// Detector.canCollide(filterA, filterB)
-
-// You can make the world bounds bigger when you create a world:
-//
-// Matter.World.create({
-//     bounds: {
-//         min: { x: 0, y: 0 },
-//         max: { x: 800, y: 600 }
-//     }
-// });
-
-
-
-//apply force at start
-
-
-// engine.world.bodies[0].force.x=.5
-//above shot the box out to the right, fairly fast
-//engine.world.bodies[0].force.x=.05
-//that pushed it to the right, but not off screen, friction properties of object ( engine.world.bodies[0] ) were
-// friction:0.1
-// frictionAir:0.01
-// frictionStatic:0.5
-
-//object size seems to have an effect. larger rectangle SEEMED to move more than the square when equal force was applied
-
-
-//trying to log collisions
-
-// console.log(Date());
-
-
-
+//components
+const CreatureGenerator = require('./../creatureMod/creatureGenerator.js');
+const ApplyForceButton = require('./applyForce.js')
+const PauseButton = require('./time/pauseSim.js');
+const RestartButton = require('./time/restartSim.js');
+const SlowButton = require('./time/slowDownSim.js');
+const SpeedButton = require('./time/speedUpSim.js');
 
 
 const Universe = React.createClass ( {
@@ -77,37 +39,51 @@ const Universe = React.createClass ( {
   },
 
   componentDidMount :  function (){
-    const ticks = 'test';//is not recognized when i check console
+    // const ticks = 'test';//is not recognized when i check console
   },
 
-  matterJScode : function (){
+
+
+  render : function() {
+    //tell engine to render in universeContainer
+    // return (
+    //
+    //   <div id="universeContainer">
+    //     <button onClick={this.matterJSCode}>Start the sim</button>
+    //     <ul>
+    //     canvas below to see if it gets overwritten
+    //     <canvas></canvas>
+    //     canvas with id 'canvas' below
+    //     <canvas id="canvas"></canvas>
+    //     </ul>
+    //
+    //   </div>
+    // )
+
 
     //define canvas for use in creating engine
     const    canvas = document.getElementById('canvas');
 
-    {/* create a Matter.js engine */}
+    /* create a Matter.js engine */
     const engine = Engine.create({
           render: {
           element: document.body
           ,canvas: canvas
           ,options: {
             width: 500,
-            height: 500
+            height: 500,
+            wireframes: false
           }
 
         }
     });
 
+    // const things = Composite.allBodies(engine.world);
 
-    const things = Composite.allBodies(engine.world);
 
-    //attempt to modify gravity
-    // engine.world.gravity.y= 0.001;
-    // engine.world.gravity.x= 0.1;
+    //set y and x gravities to zero
     engine.world.gravity.y= 0;
     engine.world.gravity.x= 0;
-
-    //
 
     //from collisionFiltering example at https://github.com/liabru/matter-js/blob/master/examples/collisionFiltering.js
 
@@ -115,34 +91,57 @@ const Universe = React.createClass ( {
     category2 = 0x0002;
     // shapeCategorty = 0x0002; //this isn't needed since i want everything to collide with everything
     const defaultProps = { //probably need to turn this into a function to pass in things like object label or anything else i may want to change.
-    collisionFilter: {
+    /*collisionFilter: {
     category: defaultCategory,
     mask: defaultCategory
-    },
+    },*/
     restitution: 1,
     friction: 0,
     frictionAir: 0,
     inertia: Infinity
+    // ,render:
+    //   fillStyle: "#FFFFFF"
     }; //force is conserved until some object moves fast enough that it goes through the edge. maybe start with lower force and have creature energy used to generate additional force over time, thus allowing the use of friction
+    // ********** com back here
+    function malleableDefaults(restit, fric, airFric, inert, genString) {
+      var temp = {
+      restitution: restit,
+      friction: fric,
+      frictionAir: airFric
+      ,inertia: inert
+      ,render: {
+        // fillStyle: "#8C8081"
+        strokeStyle: "#8C8081"
+        ,lineWidth: 1
+        ,opacity: 1
+        }
+      }
+      return temp;
+    }
+
+    // ********** return to above function
 
     const borderProps = {
-    isStatic: true,
-    collisionFilter: {
+    isStatic: true
+    /*,collisionFilter: {
     category: defaultCategory,
     mask: defaultCategory
-    }
+    }*/
     ,restitution: 0
     ,friction: 0
     ,frictionAir: 0
     };
 
-    // create two boxes and a ground
-    const boxA = Bodies.rectangle(370, 270, 40, 40,defaultProps );
-    const trapezoidB = Bodies.trapezoid(450, 450, 60, 60, 5,  defaultProps);
-    // const trapezoidB = Bodies.trapezoid(x, y, wid, hei, slo, defaultProps);
-    const circleA = Bodies.circle(270, 150, 20, defaultProps);
-    const polygonA = Bodies.polygon(350, 300, 6, 20, defaultProps);
-    const rectangleA = Bodies.rectangle(100, 150, 80, 35, defaultProps);
+    //non-static bodies
+    // const boxA = Bodies.rectangle(370, 270, 40, 40,malleableDefaults(1,0,0,Infinity,'boxA name') );
+    // console.log(boxA,'was boxA');
+    // console.log(Matter.Bodies, 'was Matter.Bodies'); //this returned functions to make new bodies
+    // console.log(Matter.Body, 'was Matter.Body');//returned functions to affect bodies
+    // const trapezoidB = Bodies.trapezoid(450, 450, 60, 60, 5,  defaultProps);
+    // // const trapezoidB = Bodies.trapezoid(x, y, wid, hei, slo, defaultProps);
+    // const circleA = Bodies.circle(270, 150, 20, defaultProps);
+    // const polygonA = Bodies.polygon(350, 300, 6, 20, defaultProps);
+    // const rectangleA = Bodies.rectangle(100, 150, 80, 35, defaultProps);
 
 
     //borders
@@ -151,83 +150,96 @@ const Universe = React.createClass ( {
     const leftBorder = Bodies.rectangle(0, 0, 50, 1000, borderProps );
     const rightBorder = Bodies.rectangle(500, 30, 50, 1000, borderProps );
 
+    //define initial forces
+    // const applyForce = (engine) => {
+    // Composite.allBodies(engine.world).forEach( (body) => {
+    // if(!body.isStatic){
+    // const forceMagnitude = 0.01  * body.mass;
+    // Body.applyForce(body, { x: 0, y: 0 }, {
+    //
+    //   x: (forceMagnitude + Common.random() * forceMagnitude) * Common.choose([1, -1]),
+    //   y: (forceMagnitude + Common.random() * forceMagnitude) * Common.choose([1, -1])
+    // })
+    // }
+    // });
+    //
+    // }
+
     //borders
     World.add(engine.world, [bottomBorder, topBorder, leftBorder, rightBorder
 
      ]);
 
-    // add all of the bodies to the world
-    World.add(engine.world, [boxA, trapezoidB, circleA, polygonA, rectangleA /*testContact,*/ ]);
 
-    //define initial forces
-    const applyForce = (engine) => {
-    Composite.allBodies(engine.world).forEach( (body) => {
-    if(!body.isStatic){
-    const forceMagnitude = 0.01  * body.mass;
-    Body.applyForce(body, { x: 0, y: 0 }, {
 
-      x: (forceMagnitude + Common.random() * forceMagnitude) * Common.choose([1, -1]),
-      y: (forceMagnitude + Common.random() * forceMagnitude) * Common.choose([1, -1])
-    })
-    }
-    });
 
-    }
-
-    //apply above definitions
-    applyForce(engine);
 
     //log shit on collisions
     Events.on(engine, 'collisionStart', (event)=>{
 
-
-
-
-    //  this block returns the name of the bodies involved in the collision
-    console.log(engine.pairs.list[0].bodyA.label, 'was engine.pairs.list[0].bodyA.label');
-    console.log(engine.pairs.list[0].bodyB.label, 'was engine.pairs.list[0].bodyB.label');
-    //need to have if-statement to ignore collisions with sides for logging/event triggering
-    //end of block
-
-    /* other collision pairs. may return error if no collisions at that index
-    // console.log(engine.pairs.list[1].bodyA.label, 'was engine.pairs.list[1].bodyA.label');
-    // console.log(engine.pairs.list[2].bodyA.label, 'was engine.pairs.list[2].bodyA.label');
-    // console.log(engine.pairs.list[3].bodyA.label, 'was engine.pairs.list[3].bodyA.label');
-    */
+    //this is where i will put the checkBreedable() call. play arround with the "collision___" string to see if Start/Active/End makes 'better' behavior
 
     })
 
     const ticks = Runner.create(); //names runner so i can control later
 
+    console.log(ticks,'was ticks');
+
+    // this.setState({
+    //   runnerAlias: Runner.create()
+    // })
+
+    //apply above definitions
+    // applyForce(engine);
+    // console.log('remember to turn applyForce back on!!');
     // run the engine
     // Engine.run(engine);
     // Runner.run(engine);
     Runner.start(ticks,engine); //this usage allows me to start/stop
-
+    // Runner.start(this.state.runnerAlias,engine); //this usage allows me to start/stop
 
     // const startTicks = Runner.start(ticks,engine) //this doesn't do what i want to
 
     //Runner.start(ticks,engine) // in the console restarts motion
 
     //Runner.stop(ticks) stops the physics
+    /*end of big code block on render*/
 
-  },
+      return (
+        <div className="universeWrapper">
 
-  render : function() {
-    //tell engine to render in universeContainer
-    return (
+          <CreatureGenerator
+            engine={engine}
+            />
+          <ApplyForceButton
+            engine={engine}
+            label={'Get this show moving!'}
+            />
+          <PauseButton
+            ticks={ticks}
+            engine={engine}
+            label={'Pause'}
+            />
+          <RestartButton
+            ticks={ticks}
+            engine={engine}
+            label={'Resume at Normal Speed'}
+            />
+          <SlowButton
 
-      <div id="universeContainer">
-        <button onClick={this.matterJSCode}>Start the sim</button>
-        <ul>
-        canvas below to see if it gets overwritten
-        <canvas></canvas>
-        canvas with id 'canvas' below
-        <canvas id="canvas"></canvas>
-        </ul>
+            engine={engine}
+            label={'Slow'}
+            />
+          <SpeedButton
 
-      </div>
-    )
+            engine={engine}
+            label={'FASTER'}
+            />
+          put an applyForce button?
+
+        </div>
+      )
+
   }
 
 })

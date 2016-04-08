@@ -5,8 +5,9 @@ const $ = require('jquery');
 const Matter = require('matter-js');
 
 //react components
-const Universe = require('./universe/universe.js')
-const TimeButton = require('./universe/timeControl.js');
+const Universe = require('./universe/universe.js');
+
+
 
 //to test react front and rails back, have each service hosted on a different port, then run ajax requests to those ports as if through a 3rd party API
 
@@ -15,8 +16,9 @@ const Front = React.createClass ({
   getInitialState : function() {
 
     return {
-      placeholder: ['string'],
-      time: 'normal', //pick from: ['stopped','normal','fast','slow']
+      placeholder: ['string']
+      ,time: 'normal' //pick from: ['stopped','normal','fast','slow']
+      ,runnerAlias : ''
     }
   },
   componentDidMount : function () {
@@ -28,12 +30,12 @@ const Front = React.createClass ({
     return (
 
       <div id="frontContainer">
-        test bullshit
+        test crap
         insert further components here
 
 
         <Universe />
-        <TimeButton />
+
 
 
 
