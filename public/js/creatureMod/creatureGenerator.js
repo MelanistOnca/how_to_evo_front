@@ -13,56 +13,93 @@ const    Bodies = Matter.Bodies;
 
 const CreatureGenerator = React.createClass ( {
 
+  /*getInitialState and onBlur functions heavily inpsired by http://www.peterbe.com/plog/onchange-in-reactjs */
+  getInitialState : function () {
+    return {
+      size: ''
+      ,power: ''
+      ,move: ''
+      ,energyFactor: ''
+    }
+  }
 
-  handleClick : function (event) {
+//make  different onBlur functions for each field? sizeOnBlur, powerOnBlur, etc to reference specifically for that field? non-DRY af, but may save me time?
+  ,sizeOnBlur : function (event) {
+
+
+    // console.log(event.target.id,'was event.target.id');
+    // console.log(event.target.value, 'was event.target.value');
+    // this.state.(event.target.id) = event.target.value
+    // this.state.size
+    this.setState({
+      size: parseInt(event.target.value)
+      // typed: event.target.value
+    })
+  }
+  ,powerOnBlur : function (event) {
+
+
+    // console.log(event.target.id,'was event.target.id');
+    // console.log(event.target.value, 'was event.target.value');
+    // this.state.(event.target.id) = event.target.value
+    // this.state.size
+    this.setState({
+      power: parseInt(event.target.value)
+      // typed: event.target.value
+    })
+  }
+  ,moveOnBlur : function (event) {
+
+
+    // console.log(event.target.id,'was event.target.id');
+    // console.log(event.target.value, 'was event.target.value');
+    // this.state.(event.target.id) = event.target.value
+    // this.state.size
+    this.setState({
+      // move: parseInt(event.target.value)
+      move: event.target.value
+      // typed: event.target.value
+    })
+  }
+  ,energyFactorOnBlur : function (event) {
+
+
+    // console.log(event.target.id,'was event.target.id');
+    // console.log(event.target.value, 'was event.target.value');
+    // this.state.(event.target.id) = event.target.value
+    // this.state.size
+    this.setState({
+      energyFactor: parseInt(event.target.value)
+      // typed: event.target.value
+    })
+    // console.log(typeof 14, 'was 14 number'); //returned number
+    // console.log(typeof '14', 'was 14 string'); //returned string
+    // console.log(typeof this.state.energyFactor,'was energyFactor'); //returned string (wtf?). react state inspector shows it as a number
+    // console.log(typeof parseInt('14'), 'was parseInt() of 14 string'); //returned number
+  }
+
+  ,handleClick : function (event) {
     console.log('handleClick in creatureGen called');
     event.preventDefault();
-    const inputStrings = [$('#size'),$('#power'),$('#speed'),$('#energyFactor')]
-    const inputInt = inputStrings.map( (el)=>{
-       return parseInt(el);
-    });
+    // const inputStrings = [
+    //   ($('#size').value)
+    //   ,$('#power').value
+    //   ,$('#move').value
+    //   ,$('#energyFactor').value]
+    // console.log(inputStrings, 'was input strings, should be String');
+    // const inputInt = inputStrings.map( (el)=>{
+    //    return parseInt(el);
+    // });
+    // console.log(inputInt, 'was input int, should be Int s');
+    // console.log(parseInt(this.state.size) ,parseInt(this.state.power) ,parseInt(this.state.move) ,parseInt(this.state.energyFactor));
+    // console.log(
+    //   typeof parseInt(this.state.size) ,typeof parseInt(this.state.power) ,typeof parseInt(this.state.move) ,typeof parseInt(this.state.energyFactor)
+    // );
 
-    this.creatureInputs(inputInt[0],inputInt[1],inputInt[2],inputInt[3]/*list of input field refs*/);
-  },
-
-  //  this.refs.name->pass to label field, this.refs.size, this.refs.speed, this.refs.power, this.refs.energyFactor       //add more as needed -> will need to slip in geneology string without making it visible?
-  creatureInputs : function (size, power, speed, energyF) {
-    //do i even need to variablize this? can i just do World.add(engine.world, [Bodies.circle(/*passed inputs*/)
-    //100-400 range guarantees inside canvas
-    const rangeMin = 100;
-    const rangeMax = 400;
-    const x_coord = Math.floor(Math.random()*(rangeMax-rangeMin+1)) + rangeMin;
-    const y_coord = Math.floor(Math.random()*(rangeMax-rangeMin+1)) + rangeMin; //not DRY, but want different ones each time. functionalize?
-    //limit creature sizes between 5 and 20 :
-    //( 5+( (15*size^1.001)/(size^1.001) ) )
-    const scaledSize = 5+( (15*size^1.001)/(size^1.001) );
-    console.log('just before Bodies.circle() called in creatureInputs');
-    const newbie = Bodies.circle(x_coord,y_coord, scaledSize, this.malleableDefaults(1,0,0,Infinity,'geneology string placeholder'));
-    console.log(this.props.engine.world,'was this.props.engine.world in creatureInputs');
-
-    World.add(this.props.engine.world,[newbie])
-
+    this.props.creatureInputs('0' ,5 ,parseInt(this.state.size) ,parseInt(this.state.power) ,parseInt(this.state.move) ,parseInt(this.state.energyFactor)/*list of input field refs*/);
   },
 
 
-// js
-  malleableDefaults : function (restit ,fric ,airFric ,inert /* ,genString  ,name ,power ,speed ,energyFactor */ /* ,compBreed */) {
-    /*power, speed, energyFactor would be this.refs._ITSELF_*/
-    var temp = {
-    restitution: restit
-    ,friction: fric
-    ,frictionAir: airFric
-    ,inertia: inert
-    // ,label: name
-    // ,geneology: genString
-    // ,compatibleBreed: parseInt(compBreed) //is a number
-    // ,power: power
-    // ,speed: speed
-    // ,energy: {maxEnergy: energyFactor*10, currentEnergy: energyFactor*5}
-
-    }
-    return temp;
-  },
 
 
 
@@ -72,10 +109,33 @@ const CreatureGenerator = React.createClass ( {
       <div className="generatorContainer">
         creature generation stuff goes here <br/>
       <form action="" method="">
-        <label>Size<input type="text" id="size"  placeholder="1-10" required></input></label>
-        <label>Power<input type="text" id="power"  placeholder="1-10" required></input></label>
-        <label>Speed<input type="text" id="speed"  placeholder="1-10" required></input></label>
-        <label>Energy Factor<input type="text" id="energyFactor"  placeholder="1-10" required></input></label>
+        <label>Size
+          <input
+            type="text"
+            id="size"
+            placeholder="1-10"
+            required
+            onBlur= {this.sizeOnBlur}>
+          </input>
+
+        </label>
+        <label>Power
+          <input type="text" id="power"  placeholder="1-10" required onBlur= {this.powerOnBlur}>
+
+          </input>
+
+        </label>
+        <label>Move
+          <input type="text" id="move"  placeholder="1-10" required onBlur= {this.moveOnBlur}>
+
+          </input>
+        </label>
+        <label>Energy Factor
+          <input type="text" id="energyFactor"  placeholder="1-10" required onBlur= {this.energyFactorOnBlur}>
+
+          </input>
+
+        </label>
         <button onClick={this.handleClick}>Add Creature</button>
 
         </form>
@@ -83,7 +143,7 @@ const CreatureGenerator = React.createClass ( {
     )
   }
 
-// const boxA = Bodies.rectangle(370, 270, 40, 40,malleableDefaults(1,0,0,Infinity,'boxA name') );
+
 
 })
 

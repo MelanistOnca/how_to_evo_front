@@ -1,11 +1,19 @@
 //this function will probably need to be ported over to universe.js
 
 //c1 stands for "first creature", c2 for "second creature"
-checkBreedable : function (c1, c2) {
-  let c1match = c1.geneology.split('', (c1.geneology.length-c1.compatibleBreed).join('') );
+const checkBreedable = function (c1,c2) {
+  if((c1.isStatic||c2.isStatic)){return}
+
+  console.log(c1,'was c1 in checkBreedable file');
+  console.log(c2,'was c2 in checkBreedable file');
+  let c1match = c1.genealogy
+                  .split('', (c1.genealogy.length-c1.compatibleBreed) )
+                  .join('') ;
   console.log(c1match, 'c1match after declaration');
 
-  let c2match = c2.geneology.split('', (c2.geneology.length-c2.compatibleBreed).join('') );
+  let c2match = c2.genealogy
+                  .split('', (c2.genealogy.length-c2.compatibleBreed) )
+                  .join('') ;
   console.log(c2match, 'c2match after declaration');
 
   let c1matchCompare = c1match.split('', c2match.length).join('');
@@ -22,7 +30,7 @@ checkBreedable : function (c1, c2) {
     else {
       return false;
     }
-  } 
+  }
   else if(c1match.length>c2match.length){
     if(c1matchCompare === c2match){
       return true;
@@ -32,3 +40,5 @@ checkBreedable : function (c1, c2) {
     }
   } //end of match checks
 }
+
+module.exports = checkBreedable;
