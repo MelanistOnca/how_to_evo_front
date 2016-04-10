@@ -1,3 +1,15 @@
+const Matter = require('matter-js');
+const    Common = Matter.Common;
+
+// const Universe = require('./../universe/universe.js');
+// console.log(Universe, 'was Universe in breed.js');
+//didn't work
+
+//this is cheating because im referencing a separate file than the function i've declared in universe, they just happen to be identical, FOR THE MOMENT. when shit gets whacky, remember to compare them
+
+const creatureInputs = require('./../creatureMod/creatureInputs.js');
+
+
 const breed = function (p1, p2) {
   // in the middle of more properly functionalizing, but it's probably wrong in some crucial aspect
   let newBase = {
@@ -34,7 +46,9 @@ const breed = function (p1, p2) {
   }
   console.log(newMutated, 'was newMutated in breed() of universe.js. these should NOT be NaN but seem to be?');
   // do i need to put creatureInputs in the universe.js file and then pass it down to the places it is now? i think so?
-  let goForth = this.creatureInputs ( newMutated.genealogy ,newMutated.compatibleBreed ,newMutated.size ,newMutated.power ,newMutated.move ,newMutated.energyFactor ,newMutated.mutate )
+
+  //im cheating here because i ALSO have a creatureInputs file. if i were trying to reference the function in the universe.js it would not work. neiether would this.creatureInputs or this.props.creatureInputs since this ins't a component i've passed a prop to.
+  let goForth = creatureInputs ( newMutated.genealogy ,newMutated.compatibleBreed ,newMutated.size ,newMutated.power ,newMutated.move ,newMutated.energyFactor ,newMutated.mutate )
   /*either call each newMutated[i] here as appropriate to the function params, or maybe use a .map function for newMutated to do the same?*/
   //will need to repeat goForth for whatever i end up deciding the brood size should be (10?)
 }

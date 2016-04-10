@@ -63,11 +63,7 @@ World.add(engine.world, [
 Events.on(engine, 'collisionStart', checkMarryKill)
 
 
-const ticks = Runner.create(); //names runner so i can control later
-
-console.log(ticks,'was ticks in engineRender.js');
-
-
+const ticks = Runner.create();
 Runner.start(ticks,engine);
 
 const EngineRender = React.createClass({
