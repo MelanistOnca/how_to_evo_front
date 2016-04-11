@@ -19,7 +19,7 @@ const Engine = Matter.Engine;
 const SpeedButton = React.createClass({
 
   handleClick : function (event) {
-    console.log('handleClick called');
+    // console.log('handleClick called');
     event.preventDefault();
     this.speedUniverse();
   },
@@ -31,7 +31,7 @@ const SpeedButton = React.createClass({
 
   //with the above names, the below stops the physics
   //Runner.stop(ticks)
-  console.log('speedUpUniverse called');
+  // console.log('speedUpUniverse called');
   // console.log(this.props.ticks,'was this.props.ticks');
     this.props.engine.timing.timeScale = .7; //0 stops time, greater than 1 speeds it up. //values much larger than 1.3 seem to knock current base objects out of universe.
     //i have code in restart sim that should set timeScale back to 1
