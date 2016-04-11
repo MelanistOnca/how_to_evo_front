@@ -5,7 +5,7 @@ const React = require('react');
 const Matter = require('matter-js');
 const $ = require('jquery');
 
-console.log('creatureGenerator ran');
+// console.log('creatureGenerator ran');
 
 //matter-js reqs
 const    World = Matter.World;
@@ -57,7 +57,7 @@ const CreatureGenerator = React.createClass ( {
     // this.state.size
     this.setState({
       // move: parseInt(event.target.value)
-      move: event.target.value
+      move: parseInt(event.target.value)
       // typed: event.target.value
     })
   }
@@ -79,7 +79,7 @@ const CreatureGenerator = React.createClass ( {
   }
 
   ,handleClick : function (event) {
-    console.log('handleClick in creatureGen called');
+    // console.log('handleClick in creatureGen called');
     event.preventDefault();
     // const inputStrings = [
     //   ($('#size').value)
@@ -95,8 +95,11 @@ const CreatureGenerator = React.createClass ( {
     // console.log(
     //   typeof parseInt(this.state.size) ,typeof parseInt(this.state.power) ,typeof parseInt(this.state.move) ,typeof parseInt(this.state.energyFactor)
     // );
+    // console.log(this.state.size,'this.state.size just before creatureInputs call in creatureGenerator.js');
+    // console.log(this.state, 'this.state just before creatureInputs call in creatureGenerator.js');
 
     this.props.creatureInputs('0' ,5 ,parseInt(this.state.size) ,parseInt(this.state.power) ,parseInt(this.state.move) ,parseInt(this.state.energyFactor)/*list of input field refs*/);
+    // console.log(this.state,'this.state AFTER creatureInputs call in creatureGenerator.js');
   },
 
 
