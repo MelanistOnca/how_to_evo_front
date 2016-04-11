@@ -30,7 +30,7 @@ const Engine = Matter.Engine;
 const SlowButton = React.createClass({
 
   handleClick : function (event) {
-    console.log('handleClick called');
+    // console.log('handleClick called');
     event.preventDefault();
     this.slowUniverse();
     //if i had slowed and resumed, i need to hit pause twice to actually pause. resuming from slow seems to speed up the bodies.
@@ -43,7 +43,7 @@ const SlowButton = React.createClass({
 
   //with the above names, the below stops the physics
   //Runner.stop(ticks)
-  console.log('slowDownUniverse called');
+  // console.log('slowDownUniverse called');
   // console.log(this.props.ticks,'was this.props.ticks');
     this.props.engine.timing.timeScale = 0.2; //0 stops time, greater than 1 speeds it up
     //i have code in restart sim that should set timeScale back to 1

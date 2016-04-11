@@ -5,8 +5,8 @@
 const checkBreedable = function (c1,c2) {
   if((c1.isStatic||c2.isStatic)){return}
 
-  // console.log(c1,'was c1 in checkBreedable file');
-  // console.log(c2,'was c2 in checkBreedable file');
+  console.log(c1,'was c1 in checkBreedable file');
+  console.log(c2,'was c2 in checkBreedable file');
   console.log(c1.genealogy,'was c1.genealogy in checkBreedable file');
   console.log(c2.genealogy,'was c2.genealogy in checkBreedable file');
   let c1match = c1.genealogy

@@ -14,7 +14,7 @@ const Runner = Matter.Runner;
 const PauseButton = React.createClass({
 
   handleClick : function (event) {
-    console.log('handleClick called');
+    // console.log('handleClick called');
     event.preventDefault();
     this.pauseUniverse();
     //if i had slowed and resumed, i need to hit pause twice to actually pause. resuming from slow seems to speed up the bodies.
