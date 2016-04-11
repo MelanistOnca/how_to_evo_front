@@ -127,7 +127,7 @@ const creatureInputs = function (genealogy ,compatibleBreed ,size ,power ,move ,
 //function needed for checkBreedable. again, fuck engine.
 const breed = function (p1, p2) {
   // in the middle of more properly functionalizing, but it's probably wrong in some crucial aspect
-  console.log('breed was called'); //breed seems to get called multiple times per collision. probably something to do with how i'm defining/referring to/accidentally calling back to creatureInputs and/or breed()
+  console.log('breed was called'); //breed seems to get called multiple times per collision. probably something to do with how i'm defining/referring to/accidentally calling back to creatureInputs and/or breed() 
   // console.log(p1, 'was p1 at start of breed in universe.js');
   // console.log(p2, 'was p2 at start of breed universe.js');
   let newBase = {
