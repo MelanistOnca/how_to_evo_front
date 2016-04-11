@@ -65,7 +65,7 @@ const CreatureList = React.createClass({
         <button onClick={this.handleClick}>
           {this.props.label}
         </button>
-        creatureList goes here
+
         <ul>
           <li>
 

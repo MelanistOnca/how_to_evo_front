@@ -8,7 +8,7 @@ const SingleCreature = React.createClass ({
     // console.log(this.props, 'was this.props'); //returned the displayCreatures function, as expected. need to somehow get the results of that function passed. this should be simple but my brain is fried.
     return (
       <div>
-        creature info goes here
+        
       </div>
     )
   }
