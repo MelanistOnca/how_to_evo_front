@@ -3,7 +3,7 @@
 
 //not going to do this today. maybe later.
 
-'use strict'
+// 'use strict'
 const React = require('react');
 const Matter = require('matter-js');
 

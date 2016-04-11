@@ -97,9 +97,10 @@ const CreatureGenerator = React.createClass ( {
     // );
     // console.log(this.state.size,'this.state.size just before creatureInputs call in creatureGenerator.js');
     // console.log(this.state, 'this.state just before creatureInputs call in creatureGenerator.js');
-
+    // console.log('just before this.props.creatureInputs() call in creatureGenerator.js');
     this.props.creatureInputs('0' ,5 ,parseInt(this.state.size) ,parseInt(this.state.power) ,parseInt(this.state.move) ,parseInt(this.state.energyFactor)/*list of input field refs*/);
     // console.log(this.state,'this.state AFTER creatureInputs call in creatureGenerator.js');
+    // console.log('just AFTER this.props.creatureInputs() call in creatureGenerator.js');
   },
 
 

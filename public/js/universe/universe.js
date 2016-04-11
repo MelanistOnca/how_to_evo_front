@@ -187,18 +187,24 @@ const breed = function (p1, p2) {
   //im cheating here because i ALSO have a creatureInputs file. if i were trying to reference the function in the universe.js it would not work. neiether would this.creatureInputs or this.props.creatureInputs since this ins't a component i've passed a prop to.
 
   //fuckign terrible practice is about to happen
-  let goForth = creatureInputs ( newMutated.genealogy ,newMutated.compatibleBreed ,newMutated.size ,newMutated.power ,newMutated.move ,newMutated.energyFactor ,newMutated.mutate )
-  /*either call each newMutated[i] here as appropriate to the function params, or maybe use a .map function for newMutated to do the same?*/
-  //will need to repeat goForth for whatever i end up deciding the brood size should be (10?)
+  // for(let i=0; i<1; i++) {
+  //   let goForth = creatureInputs ( newMutated.genealogy ,newMutated.compatibleBreed ,newMutated.size ,newMutated.power ,newMutated.move ,newMutated.energyFactor ,newMutated.mutate )
+  //   /*either call each newMutated[i] here as appropriate to the function params, or maybe use a .map function for newMutated to do the same?*/
+  //   //will need to repeat goForth for whatever i end up deciding the brood size should be (10?)
+  // }
+
+  return creatureInputs ( newMutated.genealogy ,newMutated.compatibleBreed ,newMutated.size ,newMutated.power ,newMutated.move ,newMutated.energyFactor ,newMutated.mutate )
+
+
 }
 //also function for checkBreedable. fuck engine yet again.
 
 const fight = function(c1, c2)  {
-  // if( (c1.isStatic||c2.isStatic) ){
-  //   console.log('fight was called against a wall');
-  //   return
-  // } //was this what was fucking everything up?
-  console.log('fight was called');
+  if( (c1.isStatic||c2.isStatic) ){
+    console.log('fight was called against a wall');
+    return
+  } //was this what was fucking everything up?
+  // console.log('fight was called');
   // console.log(c1, 'c1 in fight call in universe.js');
   // console.log(c2, 'c2 in fight call in universe.js');
   let c1fitness = c1.size * c1.move * c1.power * c1.currentEnergy
@@ -218,19 +224,21 @@ const fight = function(c1, c2)  {
       if(c2.currentEnergy < c2.maxEnergy){ c2.currentEnergy = c2.maxEnergy} //if that gives c2 more than it's max energy, have max energy instead
       console.log(c1, 'was c1, about to be "removed"');
       Composite.remove(engine.world, c1);
-
+      console.log(c1, 'was c1 after "removal"');
 
       break;
     case (result === 0):
       console.log(c1, c2, 'was c1,c2 about to be "removed"');
       Composite.remove(engine.world, c1);
       Composite.remove(engine.world, c2);
+      console.log(c1, c2, 'was c1,c2 after  "removal"');
       break;
     case (result > 0):
     c1.currentEnergy += c2.energyFactor+ c2.currentEnergy*10; //c1 eats c2, gains energy based on c2 energy stats //maybe account for magnitude of victory somehow?
     if(c1.currentEnergy < c1.maxEnergy){ c1.currentEnergy = c1.maxEnergy}//if c1 gains more than max energy, instead obtain max energy
       console.log(c2, 'was c2, about to be "removed"');
       Composite.remove(engine.world, c2);
+      console.log(c2, 'was c2 after "removal"');
       break;
     default:
       console.log('violence is never the answer, at least today'); //this should never happen as violence or sex is always the answer #grimdarkyolo
@@ -238,41 +246,40 @@ const fight = function(c1, c2)  {
 }
 
 //function needed for collision checks. needs to be here because fuck engine.
-const checkMarryKill = function(event){
-  console.log('checkMarryKill was called');
+const checkMarryKill = function(/*event*/){
+  // console.log('checkMarryKill was called');
   // (event)=>
   // console.log('checkMarryKill called');
   //this is where i will put the checkBreedable() call. play arround with the "collision___" string to see if Start/Active/End makes 'better' behavior
   engine.pairs.list.forEach( (el) => {
     // checkBreedable(el.bodyA, el.bodyB) //may need to implement a check for either body being "isStatic"(is a wall) and to skip further checks if one of the bodies "isStatic"
-    console.log(el, 'el in checkMarryKill .list array');
+    // console.log(el, 'el in checkMarryKill .list array');
 
     // for some reason, contacts with other non-wall bodies are not being recognized.
-    /*
+
     if( (el.bodyA.isStatic||el.bodyB.isStatic) ){
       return {}
     }
-    else*/ if(checkBreedable(el.bodyA,el.bodyB)){
-      console.log(checkBreedable(el.bodyA,el.bodyB), 'was checkBreedable(el.bodyA,el.bodyB) before breed call');
+    else if( checkBreedable(el.bodyA,el.bodyB) ){
+      // console.log(checkBreedable(el.bodyA,el.bodyB), 'was checkBreedable(el.bodyA,el.bodyB) before breed call');
       // console.log(el.bodyA, el.bodyB,'el.bodyA and el.body B just prior to breed call');
       // //no size in the bodies here
       breed(el.bodyA,el.bodyB)
-    }
-    else {
-      console.log(checkBreedable(el.bodyA,el.bodyB),'was checkBreedable(el.bodyA,el.bodyB) just prior to fight call');
+    } else if( !checkBreedable(el.bodyA,el.bodyB) ){
+      // console.log(checkBreedable(el.bodyA,el.bodyB),'was checkBreedable(el.bodyA,el.bodyB) just prior to fight call');
       fight(el.bodyA,el.bodyB)
     }
   })
 
-  }
+}
 
 
 //end of function needed for collision check
 //log shit on collisions
+// Events.on(engine, 'collisionStart', ()=>{
+//   console.log('collisionStart detected in universe.js');
+// })
 Events.on(engine, 'collisionStart', checkMarryKill)
-Events.on(engine, 'collisionStart', ()=>{
-  console.log('collisionStart detected in universe.js');
-})
 const ticks = Runner.create();
 Runner.start(ticks,engine);
 

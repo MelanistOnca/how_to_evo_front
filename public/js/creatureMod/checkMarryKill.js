@@ -16,6 +16,6 @@
 //   })
 //
 //   }
-}
-
-module.exports = checkMarryKill;
+// }
+//
+// module.exports = checkMarryKill;
