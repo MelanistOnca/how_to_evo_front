@@ -54,6 +54,7 @@ const CreatureList = React.createClass({
     console.log(display, 'was display after loop');
     // console.log(bodiesArray, 'was bodiesArray after loop');
   }
+  //the display above may help you figure out why bodies are not being removed. no. this shows the number of bodies that HAVE BEEN, not the total that are RIGHT NOW. will need to fix this for actual functionality
 
 
   ,render : function() {

@@ -7,6 +7,8 @@ const checkBreedable = function (c1,c2) {
 
   // console.log(c1,'was c1 in checkBreedable file');
   // console.log(c2,'was c2 in checkBreedable file');
+  console.log(c1.genealogy,'was c1.genealogy in checkBreedable file');
+  console.log(c2.genealogy,'was c2.genealogy in checkBreedable file');
   let c1match = c1.genealogy
                   .split('', (c1.genealogy.length-c1.compatibleBreed) )
                   .join('') ;
@@ -35,7 +37,7 @@ const checkBreedable = function (c1,c2) {
     }
   }
   else if(c1match.length>c2match.length){
-    // console.log('c1match.length > c2match.lengt');
+    // console.log('c1match.length > c2match.length');
     if(c1matchCompare === c2match){
       // console.log('c1matchCompare === c2match');
       return true;

@@ -33,7 +33,7 @@ const SpeedButton = React.createClass({
   //Runner.stop(ticks)
   console.log('speedUpUniverse called');
   // console.log(this.props.ticks,'was this.props.ticks');
-    this.props.engine.timing.timeScale = 1.3; //0 stops time, greater than 1 speeds it up. //values much larger than 1.3 seem to knock current base objects out of universe.
+    this.props.engine.timing.timeScale = .7; //0 stops time, greater than 1 speeds it up. //values much larger than 1.3 seem to knock current base objects out of universe.
     //i have code in restart sim that should set timeScale back to 1
     // console.log(this.props.engine.timing.timeScale, 'was timeScale');
 

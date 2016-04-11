@@ -29,7 +29,7 @@ const RestartButton = React.createClass({
   console.log('restartUniverse called');
   console.log(this.props.ticks,'was this.props.ticks');
     Runner.start(this.props.ticks, this.props.engine);
-    this.props.engine.timing.timeScale = 1;
+    // this.props.engine.timing.timeScale = 1;
     // console.log(this.props.engine.timing.timeScale, 'was timeScale');
   },
 

@@ -61,6 +61,7 @@ const engine = Engine.create({
   });
   engine.world.gravity.y= 0;
   engine.world.gravity.x= 0;
+  engine.timing.timeScale = .5
 
 
 const defaultCategory = 0x0001;
@@ -103,7 +104,7 @@ const creatureInputs = function (genealogy ,compatibleBreed ,size ,power ,move ,
   //( 5+( (15*size^1.001)/(size^1.001) ) )
   // const scaledSize = 10+( (40*size^1.001)/(size^1.001) );
   //the above formula was not behaving as expected. trying the following instead: y= 10+(10x^1.3)/(x) where 0<x<10
-  const scaledSize = 10+( 10*Math.pow(size, 1.3 ) ) /(size) ;
+  const scaledSize = 1+( 10*Math.pow(size, 1.3 ) ) /(size) ;
   // console.log('just before Bodies.circle() called in creatureInputs in universe.js');
   const newbie = Bodies.circle(x_coord,y_coord, scaledSize, malleableDefaults(genealogy ,compatibleBreed ,size ,power ,move ,energyF ,mutate));
   // console.log(this.props.engine.world,'was this.props.engine.world in creatureInputs');
@@ -126,8 +127,9 @@ const creatureInputs = function (genealogy ,compatibleBreed ,size ,power ,move ,
 //function needed for checkBreedable. again, fuck engine.
 const breed = function (p1, p2) {
   // in the middle of more properly functionalizing, but it's probably wrong in some crucial aspect
-  console.log(p1, 'was p1 at start of breed in universe.js');
-  console.log(p2, 'was p2 at start of breed universe.js');
+  console.log('breed was called'); //breed seems to get called multiple times per collision. probably something to do with how i'm defining/referring to/accidentally calling back to creatureInputs and/or breed()
+  // console.log(p1, 'was p1 at start of breed in universe.js');
+  // console.log(p2, 'was p2 at start of breed universe.js');
   let newBase = {
     genealogy : ( (p1.genealogy.length>p2.genealogy.length) ? p1.genealogy : p2.genealogy )//bias towards p2.g when equal length
     ,compatibleBreed:(p1.compatibleBreed+p2.compatibleBreed)/20
@@ -192,7 +194,7 @@ const breed = function (p1, p2) {
   //   /*either call each newMutated[i] here as appropriate to the function params, or maybe use a .map function for newMutated to do the same?*/
   //   //will need to repeat goForth for whatever i end up deciding the brood size should be (10?)
   // }
-
+  // console.log(engine.world.bodies, 'was engine.world.bodies just before new creature introduced');
   return creatureInputs ( newMutated.genealogy ,newMutated.compatibleBreed ,newMutated.size ,newMutated.power ,newMutated.move ,newMutated.energyFactor ,newMutated.mutate )
 
 
@@ -201,7 +203,7 @@ const breed = function (p1, p2) {
 
 const fight = function(c1, c2)  {
   if( (c1.isStatic||c2.isStatic) ){
-    console.log('fight was called against a wall');
+    // console.log('fight was called against a wall');
     return
   } //was this what was fucking everything up?
   // console.log('fight was called');
@@ -214,21 +216,21 @@ const fight = function(c1, c2)  {
   // console.log(c2fitness, 'was c2fitness')
 
   let result = c1fitness - c2fitness
-  console.log(result, 'was result in fight')
+  console.log(result, 'was result in fight call')
 
-
+  console.log(engine.world.bodies, 'was engine.world.bodies before any "removal" happens');
   //switch true idea from http://data.agaric.com/how-use-less-or-greater-switch-statement
   switch (true) {
     case (result < 0):
       c2.currentEnergy += c1.energyFactor+ c1.currentEnergy*10; //c2 eats c1, gains energy based on c1 energy stats //maybe account for magnitude of victory somehow?
       if(c2.currentEnergy < c2.maxEnergy){ c2.currentEnergy = c2.maxEnergy} //if that gives c2 more than it's max energy, have max energy instead
-      console.log(c1, 'was c1, about to be "removed"');
+      // console.log(c1, 'was c1, about to be "removed"');
       Composite.remove(engine.world, c1);
       console.log(c1, 'was c1 after "removal"');
-
+      console.log(engine.world.bodies, 'was engine.world.bodies after that "removal"');
       break;
     case (result === 0):
-      console.log(c1, c2, 'was c1,c2 about to be "removed"');
+      // console.log(c1, c2, 'was c1,c2 about to be "removed"');
       Composite.remove(engine.world, c1);
       Composite.remove(engine.world, c2);
       console.log(c1, c2, 'was c1,c2 after  "removal"');
@@ -236,7 +238,7 @@ const fight = function(c1, c2)  {
     case (result > 0):
     c1.currentEnergy += c2.energyFactor+ c2.currentEnergy*10; //c1 eats c2, gains energy based on c2 energy stats //maybe account for magnitude of victory somehow?
     if(c1.currentEnergy < c1.maxEnergy){ c1.currentEnergy = c1.maxEnergy}//if c1 gains more than max energy, instead obtain max energy
-      console.log(c2, 'was c2, about to be "removed"');
+      // console.log(c2, 'was c2, about to be "removed"');
       Composite.remove(engine.world, c2);
       console.log(c2, 'was c2 after "removal"');
       break;
@@ -247,7 +249,11 @@ const fight = function(c1, c2)  {
 
 //function needed for collision checks. needs to be here because fuck engine.
 const checkMarryKill = function(/*event*/){
+  if( (engine.pairs.list[0].isStatic||engine.pairs.list[0].isStatic) ){
+    return {}
+  }
   // console.log('checkMarryKill was called');
+  // console.log(engine, 'was engine in checkMarryKill');
   // (event)=>
   // console.log('checkMarryKill called');
   //this is where i will put the checkBreedable() call. play arround with the "collision___" string to see if Start/Active/End makes 'better' behavior
@@ -257,13 +263,14 @@ const checkMarryKill = function(/*event*/){
 
     // for some reason, contacts with other non-wall bodies are not being recognized.
 
-    if( (el.bodyA.isStatic||el.bodyB.isStatic) ){
-      return {}
-    }
-    else if( checkBreedable(el.bodyA,el.bodyB) ){
+    // if( (el.bodyA.isStatic||el.bodyB.isStatic) ){
+    //   return {}
+    // } else
+     if( checkBreedable(el.bodyA,el.bodyB) ){
       // console.log(checkBreedable(el.bodyA,el.bodyB), 'was checkBreedable(el.bodyA,el.bodyB) before breed call');
       // console.log(el.bodyA, el.bodyB,'el.bodyA and el.body B just prior to breed call');
       // //no size in the bodies here
+      // console.log('breed() call happened, but cancelled for testing');
       breed(el.bodyA,el.bodyB)
     } else if( !checkBreedable(el.bodyA,el.bodyB) ){
       // console.log(checkBreedable(el.bodyA,el.bodyB),'was checkBreedable(el.bodyA,el.bodyB) just prior to fight call');
