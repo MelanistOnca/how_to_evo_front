@@ -30,8 +30,7 @@ const Front = React.createClass ({
     return (
 
       <div id="frontContainer">
-        test crap
-        insert further components here
+        
 
 
         <Universe />

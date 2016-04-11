@@ -114,7 +114,7 @@ const CreatureGenerator = React.createClass ( {
 
     return (
       <div className="generatorContainer">
-        creature generation stuff goes here <br/>
+
       <form action="" method="">
         <label>Size
           <input
